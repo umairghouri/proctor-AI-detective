@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 
-namespace PDetector.Native
+namespace ProctorAIDetective.Native
 {
     /// <summary>Win32 RECT. Public because window facts expose bounds.</summary>
     [StructLayout(LayoutKind.Sequential)]

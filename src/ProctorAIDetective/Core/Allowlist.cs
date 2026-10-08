@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PDetector.Core
+namespace ProctorAIDetective.Core
 {
     /// <summary>
     /// The result of asking the allowlist about one subject.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace PDetector.Core
+namespace ProctorAIDetective.Core
 {
     /// <summary>
     /// Turns a <see cref="ScanReport"/> into the two artefacts a reviewer actually keeps: a
@@ -25,7 +25,7 @@ namespace PDetector.Core
     public static class ReportExporter
     {
         /// <summary>Schema tag, so a future reader can tell which layout it is looking at.</summary>
-        public const string FormatVersion = "pdetector-report-1";
+        public const string FormatVersion = "proctor-ai-detective-report-1";
 
         /// <summary>
         /// Shown always, at the top of the window and at the top of every export. Never behind a
@@ -98,7 +98,7 @@ namespace PDetector.Core
             }
 
             root.Add("tool", MiniJson.Obj()
-                .Add("name", "P-Detector")
+                .Add("name", "Proctor AI Detective")
                 .Add("appVersion", report.AppVersion)
                 .Add("signatureVersion", report.SignatureVersion));
 
@@ -246,7 +246,7 @@ namespace PDetector.Core
             }
             catch (Exception ex)
             {
-                return "P-Detector report" + Environment.NewLine
+                return "Proctor AI Detective report" + Environment.NewLine
                      + "This report could not be formatted: " + ex.GetType().Name + ": " + ex.Message
                      + Environment.NewLine
                      + "The scan itself may have succeeded. Do not read this file as a clean result."
@@ -260,7 +260,7 @@ namespace PDetector.Core
             string nl = Environment.NewLine;
 
             Rule(sb, '=');
-            sb.Append("P-DETECTOR SCAN REPORT").Append(nl);
+            sb.Append("PROCTOR AI DETECTIVE - SCAN REPORT").Append(nl);
             Rule(sb, '=');
             sb.Append(nl);
 

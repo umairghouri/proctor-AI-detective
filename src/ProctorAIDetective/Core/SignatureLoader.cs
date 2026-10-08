@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace PDetector.Core
+namespace ProctorAIDetective.Core
 {
     /// <summary>
     /// Loads <see cref="SignatureSet"/> from signatures.json, and carries a compiled-in fallback
@@ -23,7 +23,7 @@ namespace PDetector.Core
         public const string FileName = "signatures.json";
 
         /// <summary>Folder under %LOCALAPPDATA% holding the per-user override.</summary>
-        public const string UserFolderName = "PDetector";
+        public const string UserFolderName = "ProctorAIDetective";
 
         /// <summary>
         /// Version string of the compiled-in set. Deliberately not a date: it must be obvious in
@@ -136,7 +136,7 @@ namespace PDetector.Core
 
         /// <summary>
         /// Where signatures.json is looked for, in order:
-        /// (1) next to the executable, (2) %LOCALAPPDATA%\PDetector\signatures.json.
+        /// (1) next to the executable, (2) %LOCALAPPDATA%\ProctorAIDetective\signatures.json.
         /// Never throws; a candidate that cannot be built is simply omitted.
         /// </summary>
         public static List<string> CandidatePaths()

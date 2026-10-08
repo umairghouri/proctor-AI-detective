@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using PDetector.Core;
-using PDetector.Native;
+using ProctorAIDetective.Core;
+using ProctorAIDetective.Native;
 
-namespace PDetector.Scanners
+namespace ProctorAIDetective.Scanners
 {
     /// <summary>
     /// Identifies vendor software from the running process table and from the URL-scheme
@@ -154,7 +154,7 @@ namespace PDetector.Scanners
                 report.Limitations.Add(
                     "Could not read the executable path for " + fraction + ", so their signer, company name " +
                     "and install location were never checked. These are processes owned by other users or by " +
-                    "the system. Running P-Detector as an administrator resolves substantially more: measured " +
+                    "the system. Running Proctor AI Detective as an administrator resolves substantially more: measured " +
                     "on this class of machine, 259 of 428 paths resolve without elevation against 428 of 430 with it.");
             }
             else

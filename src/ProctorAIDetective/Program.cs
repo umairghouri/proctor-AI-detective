@@ -6,14 +6,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using PDetector.Core;
-using PDetector.Ui;
+using ProctorAIDetective.Core;
+using ProctorAIDetective.Ui;
 
-namespace PDetector
+namespace ProctorAIDetective
 {
     internal static class Program
     {
-        private const string AppName = "P-Detector";
+        private const string AppName = "Proctor AI Detective";
 
         [STAThread]
         private static int Main(string[] args)
@@ -248,7 +248,7 @@ namespace PDetector
         /// <summary>
         /// This is a WinExe, so it has no console of its own. Attach to the parent console when
         /// launched from one; otherwise fall back to a message box so a double-clicked
-        /// "PDetector.exe --selftest" is not silently invisible.
+        /// "ProctorAIDetective.exe --selftest" is not silently invisible.
         /// </summary>
         private static void WriteConsole(string text, bool isError)
         {
@@ -388,11 +388,11 @@ namespace PDetector
                 sb.AppendLine("assistant - is running on this Windows machine.");
                 sb.AppendLine();
                 sb.AppendLine("USAGE");
-                sb.AppendLine("  PDetector.exe                      Open the window (normal use).");
-                sb.AppendLine("  PDetector.exe --scan               Run one scan, print JSON to stdout.");
-                sb.AppendLine("  PDetector.exe --json <path>        Run one scan, write JSON to a file.");
-                sb.AppendLine("  PDetector.exe --text <path>        Same, but the human-readable report.");
-                sb.AppendLine("  PDetector.exe --selftest           Run built-in checks and exit.");
+                sb.AppendLine("  ProctorAIDetective.exe                      Open the window (normal use).");
+                sb.AppendLine("  ProctorAIDetective.exe --scan               Run one scan, print JSON to stdout.");
+                sb.AppendLine("  ProctorAIDetective.exe --json <path>        Run one scan, write JSON to a file.");
+                sb.AppendLine("  ProctorAIDetective.exe --text <path>        Same, but the human-readable report.");
+                sb.AppendLine("  ProctorAIDetective.exe --selftest           Run built-in checks and exit.");
                 sb.AppendLine();
                 sb.AppendLine("OPTIONS");
                 sb.AppendLine("  --no-browser     Skip UI Automation browser-tab reading (faster).");

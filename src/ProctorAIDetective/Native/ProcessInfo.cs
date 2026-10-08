@@ -10,7 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 
-namespace PDetector.Native
+namespace ProctorAIDetective.Native
 {
     /// <summary>
     /// Everything this app could learn about one live process.

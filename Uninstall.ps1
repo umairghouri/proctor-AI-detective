@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Removes P-Detector from this machine.
+    Removes Proctor AI Detective from this machine.
 
 .DESCRIPTION
     Deletes the install folder, both shortcuts, the sign-in Run value and the Apps & features
@@ -21,10 +21,10 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version 2.0
 
-$AppName  = 'P-Detector'
-$RegKey   = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\PDetector'
+$AppName  = 'Proctor AI Detective'
+$RegKey   = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ProctorAIDetective'
 $RunKey   = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
-$RunValue = 'PDetector'
+$RunValue = 'ProctorAIDetective'
 
 function Say {
     param([string] $Text, [string] $Colour = 'Gray')
@@ -39,7 +39,7 @@ $reg = Get-ItemProperty -Path $RegKey -Name 'InstallLocation' -ErrorAction Silen
 if ($null -ne $reg) { $TargetDir = $reg.InstallLocation }
 
 if ([string]::IsNullOrWhiteSpace($TargetDir)) {
-    $guess = Join-Path $env:LOCALAPPDATA 'Programs\PDetector'
+    $guess = Join-Path $env:LOCALAPPDATA 'Programs\ProctorAIDetective'
     if (Test-Path $guess) { $TargetDir = $guess }
 }
 if ([string]::IsNullOrWhiteSpace($TargetDir)) {
@@ -55,7 +55,7 @@ Say ''
 
 # ---------------------------------------------------------------- stop a running instance
 
-$running = Get-Process -Name 'PDetector' -ErrorAction SilentlyContinue
+$running = Get-Process -Name 'ProctorAIDetective' -ErrorAction SilentlyContinue
 if ($null -ne $running) {
     if ($Force) {
         Say '  closing the running instance' 'Yellow'
@@ -64,7 +64,7 @@ if ($null -ne $running) {
     }
     else {
         Write-Host ''
-        Write-Host "P-Detector is running. Close it and try again, or re-run with -Force." -ForegroundColor Red
+        Write-Host "Proctor AI Detective is running. Close it and try again, or re-run with -Force." -ForegroundColor Red
         exit 1
     }
 }
@@ -100,7 +100,7 @@ if (-not [string]::IsNullOrWhiteSpace($TargetDir) -and (Test-Path $TargetDir)) {
     if ($KeepSignatures) {
         $sigs = Join-Path $TargetDir 'signatures.json'
         if (Test-Path $sigs) {
-            $keep = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'PDetector-signatures.json'
+            $keep = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'ProctorAIDetective-signatures.json'
             Copy-Item $sigs $keep -Force
             Say "  kept signatures   $keep" 'Yellow'
         }
@@ -112,7 +112,7 @@ if (-not [string]::IsNullOrWhiteSpace($TargetDir) -and (Test-Path $TargetDir)) {
     $insideTarget = $selfPath.StartsWith($TargetDir, [StringComparison]::OrdinalIgnoreCase)
 
     if ($insideTarget) {
-        $temp = Join-Path $env:TEMP ('PDetector-Uninstall-' + [Guid]::NewGuid().ToString('N') + '.ps1')
+        $temp = Join-Path $env:TEMP ('ProctorAIDetective-Uninstall-' + [Guid]::NewGuid().ToString('N') + '.ps1')
         Copy-Item $selfPath $temp -Force
 
         $args = '-NoProfile -ExecutionPolicy Bypass -File "' + $temp + '"'
@@ -149,10 +149,10 @@ if (-not $Quiet) {
     if ($anything) {
         Write-Host 'UNINSTALLED' -ForegroundColor Green
         Write-Host ''
-        Write-Host '  P-Detector only ever read from this machine, so nothing else was changed.'
+        Write-Host '  Proctor AI Detective only ever read from this machine, so nothing else was changed.'
     }
     else {
-        Write-Host 'Nothing to do - P-Detector does not appear to be installed.' -ForegroundColor Yellow
+        Write-Host 'Nothing to do - Proctor AI Detective does not appear to be installed.' -ForegroundColor Yellow
     }
     Write-Host ''
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace PDetector.Scanners
+namespace ProctorAIDetective.Scanners
 {
     /// <summary>
     /// Runs a UI Automation call on a dedicated STA thread behind a HARD wall-clock timeout,
@@ -184,7 +184,7 @@ namespace PDetector.Scanners
             }, 1024 * 1024);
 
             thread.IsBackground = true;          // must never hold the process open at shutdown
-            thread.Name = "pdetector-uia-probe";
+            thread.Name = "proctor-uia-probe";
             thread.Priority = ThreadPriority.BelowNormal;
 
             try

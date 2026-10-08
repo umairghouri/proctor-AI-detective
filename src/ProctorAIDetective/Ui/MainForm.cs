@@ -10,9 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using PDetector.Core;
+using ProctorAIDetective.Core;
 
-namespace PDetector.Ui
+namespace ProctorAIDetective.Ui
 {
     /// <summary>
     /// The whole user interface, written by hand rather than as a .Designer.cs + .resx pair.
@@ -140,7 +140,7 @@ namespace PDetector.Ui
 
         private void BuildWindow()
         {
-            Text = "P-Detector";
+            Text = "Proctor AI Detective";
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -184,7 +184,7 @@ namespace PDetector.Ui
             header.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             header.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
-            _title.Text = "P-Detector";
+            _title.Text = "Proctor AI Detective";
             _title.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold, GraphicsUnit.Point);
             _title.AutoSize = true;
             _title.Margin = new Padding(0, 0, 0, 0);
@@ -784,7 +784,7 @@ namespace PDetector.Ui
                     "The scan could not be completed." + Environment.NewLine + Environment.NewLine
                     + failure + Environment.NewLine + Environment.NewLine
                     + "Nothing was concluded. Do not read this as a clean result.",
-                    "P-Detector", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    "Proctor AI Detective", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -1239,13 +1239,13 @@ namespace PDetector.Ui
                     + "from screen capture is readable across processes without elevation. "
                     + "Administrator rights only let the tool resolve the image path of more "
                     + "processes.",
-                    "P-Detector", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Proctor AI Detective", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this,
                     "Could not restart with administrator rights: " + ex.Message,
-                    "P-Detector", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    "Proctor AI Detective", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -1263,20 +1263,20 @@ namespace PDetector.Ui
             if (r == null)
             {
                 MessageBox.Show(this, "There is no scan to export yet. Run a scan first.",
-                    "P-Detector", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Proctor AI Detective", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             string suggested;
             try
             {
-                suggested = "pdetector-" + Sanitise(r.MachineName) + "-"
+                suggested = "proctor-ai-detective-" + Sanitise(r.MachineName) + "-"
                           + DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)
                           + (json ? ".json" : ".txt");
             }
             catch (Exception)
             {
-                suggested = json ? "pdetector-report.json" : "pdetector-report.txt";
+                suggested = json ? "proctor-ai-detective-report.json" : "proctor-ai-detective-report.txt";
             }
 
             using (var dialog = new SaveFileDialog())
@@ -1308,7 +1308,7 @@ namespace PDetector.Ui
                     MessageBox.Show(this,
                         "Could not write the export:" + Environment.NewLine + Environment.NewLine
                         + ex.GetType().Name + ": " + ex.Message,
-                        "P-Detector", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        "Proctor AI Detective", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -1319,7 +1319,7 @@ namespace PDetector.Ui
             if (r == null)
             {
                 MessageBox.Show(this, "There is no scan to copy yet. Run a scan first.",
-                    "P-Detector", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Proctor AI Detective", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -1334,7 +1334,7 @@ namespace PDetector.Ui
                 MessageBox.Show(this,
                     "Could not copy to the clipboard (" + ex.GetType().Name
                     + "). Another program may be holding it open. Try the text export instead.",
-                    "P-Detector", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Proctor AI Detective", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -1412,12 +1412,12 @@ namespace PDetector.Ui
                     var size = new Size(available, needed.Height + 2);
                     if (label.Size != size) label.Size = size;
 
-                    if (Environment.GetEnvironmentVariable("PDETECTOR_UIDIAG") == "1")
+                    if (Environment.GetEnvironmentVariable("PROCTOR_UIDIAG") == "1")
                     {
                         try
                         {
                             File.AppendAllText(
-                                Path.Combine(Path.GetTempPath(), "pdetector-uidiag.txt"),
+                                Path.Combine(Path.GetTempPath(), "proctor-uidiag.txt"),
                                 string.Format(
                                     "root={0} parent={1} parentClient={2} avail={3} set={4} actual={5} autosize={6} dock={7} text={8}\r\n",
                                     _root.ClientSize.Width,

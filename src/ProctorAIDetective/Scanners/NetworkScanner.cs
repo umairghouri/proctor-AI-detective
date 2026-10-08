@@ -6,10 +6,10 @@ using System.Management;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using PDetector.Core;
-using PDetector.Native;
+using ProctorAIDetective.Core;
+using ProctorAIDetective.Native;
 
-namespace PDetector.Scanners
+namespace ProctorAIDetective.Scanners
 {
     /// <summary>
     /// Network corroboration: PID-attributed live TCP connections, and the Windows DNS
@@ -224,7 +224,7 @@ namespace PDetector.Scanners
             {
                 report.Limitations.Add(selfSuppressed + " DNS cache "
                     + (selfSuppressed == 1 ? "entry was" : "entries were")
-                    + " ignored because P-Detector resolved " + (selfSuppressed == 1 ? "that name" : "those names")
+                    + " ignored because Proctor AI Detective resolved " + (selfSuppressed == 1 ? "that name" : "those names")
                     + " itself earlier in this session ("
                     + string.Join(", ", selfSuppressedNames.ToArray())
                     + "). Only the first scan after launch reads the cache before any lookup of its own, "
@@ -481,7 +481,7 @@ namespace PDetector.Scanners
             report.Limitations.Add("Checking live connections required resolving " + hostnames.Count
                 + " vendor hostname" + (hostnames.Count == 1 ? "" : "s")
                 + ", which places " + (hostnames.Count == 1 ? "that name" : "those names")
-                + " in this machine's DNS cache. If P-Detector is started again before "
+                + " in this machine's DNS cache. If Proctor AI Detective is started again before "
                 + (hostnames.Count == 1 ? "it expires" : "they expire")
                 + ", its DNS-cache check may see names put there by this scan rather than by the user. "
                 + "Repeat scans within one session already discount them.");
@@ -521,7 +521,7 @@ namespace PDetector.Scanners
                 List<HostnameHit>? hits;
                 if (!byAddress.TryGetValue(row.RemoteAddress, out hits)) continue;
 
-                // P-Detector never dials a vendor host - it only resolves names - so a socket
+                // Proctor AI Detective never dials a vendor host - it only resolves names - so a socket
                 // owned by this process cannot be a true positive. Excluded, but counted, so
                 // the exclusion is visible rather than silent.
                 if (ownPid != 0 && row.Pid == ownPid) { selfOwnedMatches++; continue; }
@@ -542,7 +542,7 @@ namespace PDetector.Scanners
             if (selfOwnedMatches > 0)
             {
                 report.Limitations.Add(selfOwnedMatches + " connection(s) to a vendor address were owned by "
-                    + "P-Detector itself and were excluded from the evidence.");
+                    + "Proctor AI Detective itself and were excluded from the evidence.");
             }
 
             if (groups.Count == 0) return;
@@ -623,7 +623,7 @@ namespace PDetector.Scanners
                 + "sites; the same is true of the Cloudflare ranges the other vendors sit behind. A match here "
                 + "is consistent with somebody visiting an ordinary website hosted on the same infrastructure. "
                 + "For that reason it is scored Weak with zero attribution and can never, by itself, produce a "
-                + "detection. The address was resolved live during this scan - P-Detector ships no IP blocklist.";
+                + "detection. The address was resolved live during this scan - Proctor AI Detective ships no IP blocklist.";
 
             Signal signal = new Signal
             {

@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Builds P-Detector and stages a portable distribution.
+    Builds Proctor AI Detective and stages a portable distribution.
 
 .DESCRIPTION
-    Produces dist\ containing PDetector.exe, signatures.json, the installer scripts and the
+    Produces dist\ containing ProctorAIDetective.exe, signatures.json, the installer scripts and the
     README, plus a zip of the same.
 
     Because the project targets .NET Framework 4.8 - which is preinstalled on every
@@ -29,8 +29,8 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version 2.0
 
 $Root       = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$ProjectDir = Join-Path $Root 'src\PDetector'
-$Project    = Join-Path $ProjectDir 'PDetector.csproj'
+$ProjectDir = Join-Path $Root 'src\ProctorAIDetective'
+$Project    = Join-Path $ProjectDir 'ProctorAIDetective.csproj'
 $DistDir    = Join-Path $Root 'dist'
 
 function Write-Step {
@@ -92,7 +92,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $OutDir = Join-Path $ProjectDir "bin\$Configuration\net48"
-$Exe    = Join-Path $OutDir 'PDetector.exe'
+$Exe    = Join-Path $OutDir 'ProctorAIDetective.exe'
 if (-not (Test-Path $Exe)) {
     Fail "Build reported success but $Exe does not exist."
 }
@@ -117,7 +117,7 @@ if (Test-Path $DistDir) { Remove-Item -Recurse -Force $DistDir }
 New-Item -ItemType Directory -Path $DistDir | Out-Null
 
 $payload = @(
-    @{ From = $Exe;                                 Name = 'PDetector.exe' },
+    @{ From = $Exe;                                 Name = 'ProctorAIDetective.exe' },
     @{ From = (Join-Path $OutDir 'signatures.json'); Name = 'signatures.json' },
     @{ From = (Join-Path $Root 'Install.ps1');       Name = 'Install.ps1' },
     @{ From = (Join-Path $Root 'Uninstall.ps1');     Name = 'Uninstall.ps1' },
@@ -134,11 +134,11 @@ foreach ($p in $payload) {
     }
 }
 
-# PDetector.exe.config only exists if the SDK emitted one; it is optional.
-$cfg = Join-Path $OutDir 'PDetector.exe.config'
+# ProctorAIDetective.exe.config only exists if the SDK emitted one; it is optional.
+$cfg = Join-Path $OutDir 'ProctorAIDetective.exe.config'
 if (Test-Path $cfg) {
-    Copy-Item -Path $cfg -Destination (Join-Path $DistDir 'PDetector.exe.config') -Force
-    Write-Info 'staged PDetector.exe.config'
+    Copy-Item -Path $cfg -Destination (Join-Path $DistDir 'ProctorAIDetective.exe.config') -Force
+    Write-Info 'staged ProctorAIDetective.exe.config'
 }
 
 # ---------------------------------------------------------------- zip
@@ -148,7 +148,7 @@ if ([string]::IsNullOrWhiteSpace($version)) { $version = '1.0.0.0' }
 
 if (-not $NoZip) {
     Write-Step 'Creating zip'
-    $zip = Join-Path $DistDir ("PDetector-Portable-$version.zip")
+    $zip = Join-Path $DistDir ("ProctorAIDetective-Portable-$version.zip")
     $items = Get-ChildItem -Path $DistDir -File | ForEach-Object { $_.FullName }
     Compress-Archive -Path $items -DestinationPath $zip -Force
     Write-Info "created $(Split-Path -Leaf $zip)"
@@ -156,7 +156,7 @@ if (-not $NoZip) {
 
 # ---------------------------------------------------------------- report
 
-$exeSize = [math]::Round((Get-Item (Join-Path $DistDir 'PDetector.exe')).Length / 1KB, 1)
+$exeSize = [math]::Round((Get-Item (Join-Path $DistDir 'ProctorAIDetective.exe')).Length / 1KB, 1)
 
 if (-not $Quiet) {
     Write-Host ''
@@ -167,8 +167,8 @@ if (-not $Quiet) {
     Write-Host "  Output     : $DistDir"
     Write-Host ''
     Write-Host '  Install on this machine :  .\dist\Install.ps1'
-    Write-Host '  Run without installing  :  .\dist\PDetector.exe'
-    Write-Host '  Headless scan           :  .\dist\PDetector.exe --json report.json'
+    Write-Host '  Run without installing  :  .\dist\ProctorAIDetective.exe'
+    Write-Host '  Headless scan           :  .\dist\ProctorAIDetective.exe --json report.json'
     Write-Host ''
     Write-Host '  Targets .NET Framework 4.8, which ships with Windows 10 1903+ and Windows 11,'
     Write-Host '  so there is no runtime for the end user to install.'

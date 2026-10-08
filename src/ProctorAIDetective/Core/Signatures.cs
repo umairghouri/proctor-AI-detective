@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PDetector.Core
+namespace ProctorAIDetective.Core
 {
     /// <summary>
     /// A vendor we can recognise. Deliberately data-driven and loaded from signatures.json:

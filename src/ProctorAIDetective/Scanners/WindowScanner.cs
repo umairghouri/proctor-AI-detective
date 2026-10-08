@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using PDetector.Core;
-using PDetector.Native;
+using ProctorAIDetective.Core;
+using ProctorAIDetective.Native;
 
-namespace PDetector.Scanners
+namespace ProctorAIDetective.Scanners
 {
     /// <summary>
     /// The decisive scanner. Enumerates every top-level window on the current desktop and asks

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PDetector.Core
+namespace ProctorAIDetective.Core
 {
     /// <summary>
     /// Confidence tier of a single piece of evidence. Drives the aggregation caps in

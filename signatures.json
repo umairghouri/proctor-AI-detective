@@ -1,7 +1,7 @@
 {
   "version": "2026.10.07.1",
   "updated": "2026-10-07",
-  "_comment": "Signature database for P-Detector. Entries marked confidence=verified were observed first-hand on a real install. Entries marked heuristic are inferred and MUST NOT be treated as proof. Edit this file to update signatures without rebuilding the app.",
+  "_comment": "Signature database for Proctor AI Detective. Entries marked confidence=verified were observed first-hand on a real install. Entries marked heuristic are inferred and MUST NOT be treated as proof. Edit this file to update signatures without rebuilding the app.",
 
   "invisibleCodepoints": [
     10240, 8203, 8204, 8205, 65279, 160, 12644, 4447, 4448,

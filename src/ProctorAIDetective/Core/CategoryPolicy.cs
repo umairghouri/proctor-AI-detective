@@ -1,6 +1,6 @@
 using System;
 
-namespace PDetector.Core
+namespace ProctorAIDetective.Core
 {
     /// <summary>
     /// Enforces what each vendor CATEGORY is allowed to assert, in exactly one place.

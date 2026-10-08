@@ -1,4 +1,4 @@
-# P-Detector
+# Proctor AI Detective
 
 A small Windows desktop app that answers one question:
 
@@ -16,7 +16,7 @@ found and the reasoning it applied to that evidence.
 
 * **One device.** It inspects *this* Windows machine. The single most common way people use a
   tool like Parakeet AI is on a **second device** — a phone propped behind the laptop, a tablet,
-  a second PC. P-Detector cannot see any of that. It is not a camera. It is not a proctor.
+  a second PC. Proctor AI Detective cannot see any of that. It is not a camera. It is not a proctor.
 * **One user session.** It sees processes and windows in the session it runs in. Another signed-in
   user's session, a different desktop, a virtual machine, or a remote session is out of reach.
 * **One moment.** A scan is a snapshot. Software started after the scan, or closed before it,
@@ -40,12 +40,12 @@ Requires the .NET SDK (any version 6.0 or newer) to **build**. The built app req
 Windows.
 
 ```powershell
-cd D:\p-detector
+cd D:\proctor-AI-detective
 .\build.ps1
 ```
 
-This cleans, restores, builds `src\PDetector\PDetector.csproj`, stages `dist\`, and produces
-`dist\PDetector-Portable-<version>.zip`. It prints the exe size and the full output path, and
+This cleans, restores, builds `src\ProctorAIDetective\ProctorAIDetective.csproj`, stages `dist\`, and produces
+`dist\ProctorAIDetective-Portable-<version>.zip`. It prints the exe size and the full output path, and
 exits non-zero if anything fails.
 
 ```
@@ -64,8 +64,8 @@ No administrator rights required.
 .\Install.ps1
 ```
 
-This copies the app to `%LOCALAPPDATA%\Programs\PDetector\`, creates a Start Menu shortcut, and
-registers an uninstall entry so P-Detector shows up in **Settings > Apps > Installed apps** like
+This copies the app to `%LOCALAPPDATA%\Programs\ProctorAIDetective\`, creates a Start Menu shortcut, and
+registers an uninstall entry so Proctor AI Detective shows up in **Settings > Apps > Installed apps** like
 any normal program.
 
 ```
@@ -89,10 +89,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Install.ps1
 ## Uninstall
 
 ```powershell
-& "$env:LOCALAPPDATA\Programs\PDetector\Uninstall.ps1"
+& "$env:LOCALAPPDATA\Programs\ProctorAIDetective\Uninstall.ps1"
 ```
 
-or use **Settings > Apps > Installed apps > P-Detector > Uninstall**.
+or use **Settings > Apps > Installed apps > Proctor AI Detective > Uninstall**.
 
 It removes the install folder, both shortcuts, the autostart value and the uninstall registry key.
 `-Quiet` suppresses output; `-Force` closes a running instance. Uninstalling something that is not
@@ -115,7 +115,7 @@ code-signing certificate, which is exactly what it is for.
 
 **The only real fix is to sign the binary.** That means buying an OV or EV code-signing certificate
 (roughly USD 200-600/year, EV requires a hardware token) and running `signtool` over
-`PDetector.exe` as a build step. An OV certificate still accumulates SmartScreen reputation slowly;
+`ProctorAIDetective.exe` as a build step. An OV certificate still accumulates SmartScreen reputation slowly;
 an EV certificate gets it immediately. If you are deploying this inside an organisation, signing it
 with your own internal certificate and pushing that certificate through policy is the normal answer.
 
@@ -580,14 +580,14 @@ This tool produces a report that can be used to accuse someone of cheating. Trea
 ## Project layout
 
 ```
-p-detector\
+proctor-AI-detective\
   build.ps1              build, stage dist\, produce the portable zip
   Install.ps1            per-user installer (no admin), -Machine for all users
   Uninstall.ps1          removes everything Install.ps1 created
   signatures.json        the signature database -- edit without rebuilding
   README.md              this file
-  src\PDetector\
-    PDetector.csproj     net48, AnyCPU, WinForms, Nullable enable
+  src\ProctorAIDetective\
+    ProctorAIDetective.csproj     net48, AnyCPU, WinForms, Nullable enable
     app.manifest         asInvoker, PerMonitorV2, longPathAware, UTF-8
     Core\                Evidence, Signatures, SignatureLoader, Allowlist,
                          ScoreEngine, MiniJson

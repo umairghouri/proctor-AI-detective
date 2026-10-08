@@ -6,10 +6,10 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
-using PDetector.Core;
-using PDetector.Native;
+using ProctorAIDetective.Core;
+using ProctorAIDetective.Native;
 
-namespace PDetector.Scanners
+namespace ProctorAIDetective.Scanners
 {
     /// <summary>
     /// Looks for the vendor's WEB app rather than its desktop app: a site open in a browser tab,

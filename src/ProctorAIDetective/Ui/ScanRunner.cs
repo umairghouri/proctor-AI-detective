@@ -7,11 +7,11 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
-using PDetector.Core;
-using PDetector.Native;
-using PDetector.Scanners;
+using ProctorAIDetective.Core;
+using ProctorAIDetective.Native;
+using ProctorAIDetective.Scanners;
 
-namespace PDetector.Ui
+namespace ProctorAIDetective.Ui
 {
     /// <summary>
     /// Runs every <see cref="IScanner"/> and produces one scored <see cref="ScanReport"/>.
@@ -346,7 +346,7 @@ namespace PDetector.Ui
                     });
 
                     thread.IsBackground = true;   // never blocks process exit
-                    thread.Name = "pdetector-" + id;
+                    thread.Name = "proctor-" + id;
                     try { thread.Priority = ThreadPriority.BelowNormal; } catch (Exception) { }
                     thread.Start();
 

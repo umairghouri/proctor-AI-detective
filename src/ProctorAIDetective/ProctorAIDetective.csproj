@@ -21,16 +21,16 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
 
-    <AssemblyName>PDetector</AssemblyName>
-    <RootNamespace>PDetector</RootNamespace>
+    <AssemblyName>ProctorAIDetective</AssemblyName>
+    <RootNamespace>ProctorAIDetective</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
 
     <Version>1.0.0</Version>
     <FileVersion>1.0.0.0</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <Product>P-Detector</Product>
-    <AssemblyTitle>P-Detector</AssemblyTitle>
-    <Company>P-Detector</Company>
+    <Product>Proctor AI Detective</Product>
+    <AssemblyTitle>Proctor AI Detective</AssemblyTitle>
+    <Company>Proctor AI Detective</Company>
     <Description>Detects whether Parakeet AI, or another screen-capture-evading AI assistant, is running on this Windows machine.</Description>
     <Copyright>Copyright (c) 2026</Copyright>
     <NeutralLanguage>en</NeutralLanguage>

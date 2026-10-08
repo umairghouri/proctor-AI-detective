@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Win32;
-using PDetector.Core;
+using ProctorAIDetective.Core;
 
-namespace PDetector.Scanners
+namespace ProctorAIDetective.Scanners
 {
     /// <summary>
     /// One custom URL scheme registration that we successfully read back, plus whatever the

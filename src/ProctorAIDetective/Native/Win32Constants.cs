@@ -1,4 +1,4 @@
-namespace PDetector.Native
+namespace ProctorAIDetective.Native
 {
     /// <summary>
     /// Every raw Win32 numeric value this app depends on, in one place, each with the

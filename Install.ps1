@@ -1,26 +1,26 @@
 <#
 .SYNOPSIS
-    Installs P-Detector for the current user. No administrator rights required.
+    Installs Proctor AI Detective for the current user. No administrator rights required.
 
 .DESCRIPTION
-    Copies the app to %LOCALAPPDATA%\Programs\PDetector, creates a Start Menu shortcut, and
+    Copies the app to %LOCALAPPDATA%\Programs\ProctorAIDetective, creates a Start Menu shortcut, and
     registers an uninstall entry so it appears in Settings > Apps like any normal program.
 
-    Per-user by design: P-Detector needs no elevation to do its job, so demanding admin for
+    Per-user by design: Proctor AI Detective needs no elevation to do its job, so demanding admin for
     the install would be friction for nothing.
 
 .PARAMETER Desktop
     Also create a desktop shortcut.
 
 .PARAMETER StartWithWindows
-    Run P-Detector when the current user signs in.
+    Run Proctor AI Detective when the current user signs in.
 
 .PARAMETER Machine
     Install to Program Files for all users. Requires an already-elevated session; if the
     session is not elevated this falls back to a per-user install rather than failing.
 
 .PARAMETER Force
-    Close a running P-Detector instead of refusing to overwrite it.
+    Close a running Proctor AI Detective instead of refusing to overwrite it.
 
 .EXAMPLE
     .\Install.ps1
@@ -39,11 +39,11 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version 2.0
 
-$AppName   = 'P-Detector'
-$ExeName   = 'PDetector.exe'
-$RegKey    = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\PDetector'
+$AppName   = 'Proctor AI Detective'
+$ExeName   = 'ProctorAIDetective.exe'
+$RegKey    = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ProctorAIDetective'
 $RunKey    = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
-$RunValue  = 'PDetector'
+$RunValue  = 'ProctorAIDetective'
 
 function Say {
     param([string] $Text, [string] $Colour = 'Gray')
@@ -70,13 +70,13 @@ $Here = Split-Path -Parent $MyInvocation.MyCommand.Definition
 # Accept being run either from dist\ (next to the exe) or from the repo root (after a build).
 $SourceExe = Join-Path $Here $ExeName
 if (-not (Test-Path $SourceExe)) {
-    $alt = Join-Path $Here 'dist\PDetector.exe'
+    $alt = Join-Path $Here 'dist\ProctorAIDetective.exe'
     if (Test-Path $alt) {
         $Here = Join-Path $Here 'dist'
         $SourceExe = $alt
     }
     else {
-        $alt2 = Join-Path $Here 'src\PDetector\bin\Release\net48\PDetector.exe'
+        $alt2 = Join-Path $Here 'src\ProctorAIDetective\bin\Release\net48\ProctorAIDetective.exe'
         if (Test-Path $alt2) {
             $Here = Split-Path -Parent $alt2
             $SourceExe = $alt2
@@ -114,7 +114,7 @@ if ($perMachine) {
     $StartMenu = Join-Path $env:ProgramData 'Microsoft\Windows\Start Menu\Programs'
 }
 else {
-    $TargetDir = Join-Path $env:LOCALAPPDATA "Programs\PDetector"
+    $TargetDir = Join-Path $env:LOCALAPPDATA "Programs\ProctorAIDetective"
     $StartMenu = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs'
 }
 
@@ -122,15 +122,15 @@ $TargetExe = Join-Path $TargetDir $ExeName
 
 # ---------------------------------------------------------------- running instance
 
-$running = Get-Process -Name 'PDetector' -ErrorAction SilentlyContinue
+$running = Get-Process -Name 'ProctorAIDetective' -ErrorAction SilentlyContinue
 if ($null -ne $running) {
     if ($Force) {
-        Say 'Closing the running P-Detector...' 'Yellow'
+        Say 'Closing the running Proctor AI Detective...' 'Yellow'
         $running | Stop-Process -Force
         Start-Sleep -Milliseconds 800
     }
     else {
-        Fail "P-Detector is currently running. Close it and try again, or re-run with -Force."
+        Fail "Proctor AI Detective is currently running. Close it and try again, or re-run with -Force."
     }
 }
 
@@ -161,7 +161,7 @@ if (Test-Path $TargetSigs) {
 Copy-Item -Path $SourceSigs -Destination $TargetSigs -Force
 Say "  signatures  -> $TargetSigs"
 
-foreach ($extra in @('README.md', 'Uninstall.ps1', 'PDetector.exe.config')) {
+foreach ($extra in @('README.md', 'Uninstall.ps1', 'ProctorAIDetective.exe.config')) {
     $src = Join-Path $Here $extra
     if (Test-Path $src) {
         Copy-Item -Path $src -Destination (Join-Path $TargetDir $extra) -Force
@@ -221,7 +221,7 @@ $uninstallCmd = 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + $u
 
 Set-ItemProperty -Path $RegKey -Name 'DisplayName'     -Value $AppName
 Set-ItemProperty -Path $RegKey -Name 'DisplayVersion'  -Value $version
-Set-ItemProperty -Path $RegKey -Name 'Publisher'       -Value 'P-Detector'
+Set-ItemProperty -Path $RegKey -Name 'Publisher'       -Value 'Proctor AI Detective'
 Set-ItemProperty -Path $RegKey -Name 'InstallLocation' -Value $TargetDir
 Set-ItemProperty -Path $RegKey -Name 'DisplayIcon'     -Value $TargetExe
 Set-ItemProperty -Path $RegKey -Name 'UninstallString' -Value $uninstallCmd
