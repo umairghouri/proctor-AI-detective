@@ -1,0 +1,23 @@
+# Normalise to LF in the repository; Git checks out CRLF on Windows.
+# Without this, line endings depend on each contributor's core.autocrlf setting and
+# whole files show as changed when nothing was edited.
+* text=auto
+
+*.cs        text diff=csharp
+*.csproj    text
+*.manifest  text
+*.json      text
+*.md        text
+*.gitignore text
+
+# PowerShell: Windows Script Host and some older hosts are unhappy with bare LF,
+# so force CRLF in the working tree.
+*.ps1       text eol=crlf
+
+# Binary: never normalise, never diff as text.
+*.exe  binary
+*.dll  binary
+*.pdb  binary
+*.zip  binary
+*.ico  binary
+*.png  binary

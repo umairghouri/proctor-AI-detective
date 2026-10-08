@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!--
+      net48, not net8.0-windows, and this is the central shipping decision.
+
+      .NET Framework 4.8 is preinstalled on every Windows 10 1903+ and Windows 11 machine,
+      so the app is a ~1 MB single .exe that runs anywhere with NOTHING to install. The
+      net8.0-windows self-contained equivalent measures 68 MB (154 MB uncompressed) and
+      cannot be trimmed: "error NETSDK1175: Windows Forms is not supported or recommended
+      with trimming enabled".
+
+      Everything this app needs is in the framework: System.Management (WMI), UIAutomation
+      (browser tabs), System.Net, registry. No NuGet package ships in the output.
+    -->
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+
+    <AssemblyName>PDetector</AssemblyName>
+    <RootNamespace>PDetector</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Product>P-Detector</Product>
+    <AssemblyTitle>P-Detector</AssemblyTitle>
+    <Company>P-Detector</Company>
+    <Description>Detects whether Parakeet AI, or another screen-capture-evading AI assistant, is running on this Windows machine.</Description>
+    <Copyright>Copyright (c) 2026</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+
+    <!-- Treat warnings seriously: this is a tool that makes claims about people. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Build-time only (PrivateAssets="all"): supplies the .NET Framework 4.8 reference
+      assemblies so this builds on a machine with ONLY the .NET SDK installed - no Visual
+      Studio, no targeting pack, and in CI. Nothing from this package ships.
+    -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- All framework assemblies: zero runtime dependencies in the output folder. -->
+    <Reference Include="System.Management" />        <!-- WMI: process command lines -->
+    <Reference Include="UIAutomationClient" />       <!-- browser tab enumeration -->
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Web.Extensions" />    <!-- JavaScriptSerializer fallback, JSON -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Signature database travels next to the exe and is editable without a rebuild. -->
+    <None Include="..\..\signatures.json" Link="signatures.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

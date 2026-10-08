@@ -1,0 +1,27 @@
+# --- build output ------------------------------------------------------------
+bin/
+obj/
+
+# The portable staging folder and the zip build.ps1 produces. Regenerate with
+# .\build.ps1; never commit a binary that nobody can reproduce from source.
+dist/
+
+# --- IDE / per-developer ------------------------------------------------------
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+# --- reference prototypes -----------------------------------------------------
+# Standalone net8 spike projects kept on disk for reading only. They are not part
+# of the build, they do not compile against net48, and the shipping code copies
+# what it needs rather than referencing them.
+ref/
+
+# --- misc ---------------------------------------------------------------------
+*.log
+*.tmp
+Thumbs.db
+desktop.ini
