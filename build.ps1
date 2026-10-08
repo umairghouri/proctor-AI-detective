@@ -22,7 +22,11 @@ param(
     [string] $Configuration = 'Release',
     [switch] $SkipClean,
     [switch] $NoZip,
-    [switch] $Quiet
+    [switch] $Quiet,
+
+    # Overrides the version baked into the exe and the zip filename. CI passes the git tag
+    # here so a "v1.2.0" release cannot ship a binary stamped 1.0.0.0. Empty = use the csproj.
+    [string] $Version = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -85,6 +89,17 @@ Write-Step "Building ($Configuration)"
 
 $buildArgs = @('build', $Project, '-c', $Configuration, '-nologo')
 if ($Quiet) { $buildArgs += @('-v', 'quiet') }
+if (-not [string]::IsNullOrWhiteSpace($Version)) {
+    # AssemblyVersion and FileVersion need 4 numeric parts; Version may carry a suffix.
+    $numeric = ($Version -split '-')[0]
+    $parts = $numeric -split '\.'
+    while ($parts.Count -lt 4) { $parts += '0' }
+    $fourPart = ($parts[0..3]) -join '.'
+    Write-Info "version override: $Version (assembly $fourPart)"
+    $buildArgs += "-p:Version=$Version"
+    $buildArgs += "-p:FileVersion=$fourPart"
+    $buildArgs += "-p:AssemblyVersion=$fourPart"
+}
 
 & dotnet $buildArgs
 if ($LASTEXITCODE -ne 0) {

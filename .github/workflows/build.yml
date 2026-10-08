@@ -1,0 +1,117 @@
+name: build
+
+# Runs on every push and PR to main as a regression check, and on a v* tag to publish a
+# Release with the portable zip attached. Tagging is therefore the entire release process:
+#
+#     git tag v1.0.1 && git push origin v1.0.1
+#
+# The binary people download is then provably built from the tagged source by a clean runner,
+# which is a stronger guarantee than committing an exe into the repository.
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write      # needed only by the release job; harmless for the others
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    # Must be Windows: the project is WinForms targeting net48 and the smoke test below
+    # calls real Win32 APIs.
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # net48 reference assemblies come from the Microsoft.NETFramework.ReferenceAssemblies
+      # package referenced by the csproj, so no Visual Studio or targeting pack is needed here.
+      - name: Derive version from tag
+        id: ver
+        shell: pwsh
+        run: |
+          $ref = "${{ github.ref }}"
+          if ($ref -like 'refs/tags/v*') {
+            $v = $ref -replace '^refs/tags/v', ''
+          } else {
+            $v = ''
+          }
+          "value=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          if ($v) { Write-Host "Building tagged version $v" }
+          else     { Write-Host "Untagged build; using the version in the csproj" }
+
+      - name: Build, self-test and package
+        shell: pwsh
+        run: ./build.ps1 -Version '${{ steps.ver.outputs.value }}'
+
+      # build.ps1 already fails the build if --selftest fails. This repeats it visibly so the
+      # assertions show up in the log rather than only in an exit code.
+      - name: Self-test (visible)
+        shell: pwsh
+        run: |
+          ./dist/ProctorAIDetective.exe --selftest
+          if ($LASTEXITCODE -ne 0) { throw "self-test failed with exit code $LASTEXITCODE" }
+
+      # The clean-machine regression test, and the most valuable check here.
+      #
+      # A GitHub runner is a bare Windows box: none of the products this tool detects are
+      # installed on it. So a scan MUST come back clear. Exit codes are 0 clear, 2 suspicious,
+      # 3 detected, 1 the scan itself failed.
+      #
+      # Anything other than 0 on this runner is a FALSE POSITIVE, which is the failure mode
+      # that matters most for a tool that makes claims about people. This caught a real one
+      # during development, where vendor domains resolving to shared Cloudflare IPs made an
+      # innocent machine read SUSPICIOUS.
+      - name: Smoke test on a clean machine (false-positive guard)
+        shell: pwsh
+        run: |
+          ./dist/ProctorAIDetective.exe --text clean-machine-report.txt
+          $code = $LASTEXITCODE
+          Get-Content clean-machine-report.txt
+          switch ($code) {
+            0 { Write-Host '::notice::Clean runner scanned CLEAR, as expected.'; break }
+            1 { throw 'The scan itself failed (exit 1).' }
+            default {
+              throw ("FALSE POSITIVE: a bare Windows runner with none of these products " +
+                     "installed scored a non-clear verdict (exit $code). The report is above. " +
+                     "Fix the signature or the scoring before releasing.")
+            }
+          }
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: ProctorAIDetective-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $zip = Get-ChildItem dist/*.zip | Select-Object -First 1
+          if ($null -eq $zip) { throw 'No zip was produced; nothing to release.' }
+          Write-Host "Releasing $($zip.Name) ($([math]::Round($zip.Length/1KB,1)) KB)"
+
+          # Notes live in .github/RELEASE_NOTES.md rather than inline: a PowerShell here-string
+          # needs its closing "@ at column 0, and column 0 ends a YAML block scalar. Keeping
+          # them in a file sidesteps that entirely and makes them editable without touching CI.
+          gh release create "${{ github.ref_name }}" $zip.FullName `
+            --title "Proctor AI Detective ${{ github.ref_name }}" `
+            --notes-file .github/RELEASE_NOTES.md
