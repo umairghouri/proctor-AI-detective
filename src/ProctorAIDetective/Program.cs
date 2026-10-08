@@ -403,6 +403,17 @@ namespace ProctorAIDetective
                 sb.AppendLine("  0  clear        3  detected (running)");
                 sb.AppendLine("  2  suspicious   1  the scan itself failed");
                 sb.AppendLine();
+                sb.AppendLine("  READING THE EXIT CODE FROM POWERSHELL");
+                sb.AppendLine("  This is a GUI-subsystem program, so double-clicking it does not flash a");
+                sb.AppendLine("  console window. The side effect is that PowerShell does NOT wait for it and");
+                sb.AppendLine("  leaves $LASTEXITCODE empty. Use Start-Process, or pipe the output:");
+                sb.AppendLine();
+                sb.AppendLine("    $p = Start-Process .\\ProctorAIDetective.exe -ArgumentList '--scan' `");
+                sb.AppendLine("                       -Wait -PassThru -NoNewWindow");
+                sb.AppendLine("    if ($p.ExitCode -eq 3) { 'detected' }");
+                sb.AppendLine();
+                sb.AppendLine("  cmd.exe and bash wait normally, so %ERRORLEVEL% and $? are reliable there.");
+                sb.AppendLine();
                 sb.AppendLine("This tool only reads. It changes nothing on the machine, and it needs");
                 sb.AppendLine("no administrator rights; running elevated only resolves more process");
                 sb.AppendLine("paths.  A clear result is NOT proof that no assistance was used.");

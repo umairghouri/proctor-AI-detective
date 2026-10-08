@@ -59,11 +59,17 @@ jobs:
 
       # build.ps1 already fails the build if --selftest fails. This repeats it visibly so the
       # assertions show up in the log rather than only in an exit code.
+      # NOTE: this app is a GUI-subsystem binary (PE subsystem 2) so that double-clicking it
+      # does not flash a console window. A consequence is that PowerShell does NOT wait for it
+      # and leaves $LASTEXITCODE as $null unless the call is piped. Start-Process -Wait
+      # -PassThru is the reliable way to read an exit code from it, and it is what any script
+      # consuming the documented exit codes should use.
       - name: Self-test (visible)
         shell: pwsh
         run: |
-          ./dist/ProctorAIDetective.exe --selftest
-          if ($LASTEXITCODE -ne 0) { throw "self-test failed with exit code $LASTEXITCODE" }
+          $p = Start-Process -FilePath ./dist/ProctorAIDetective.exe `
+                             -ArgumentList '--selftest' -Wait -PassThru -NoNewWindow
+          if ($p.ExitCode -ne 0) { throw "self-test failed with exit code $($p.ExitCode)" }
 
       # The clean-machine regression test, and the most valuable check here.
       #
@@ -78,8 +84,10 @@ jobs:
       - name: Smoke test on a clean machine (false-positive guard)
         shell: pwsh
         run: |
-          ./dist/ProctorAIDetective.exe --text clean-machine-report.txt
-          $code = $LASTEXITCODE
+          $p = Start-Process -FilePath ./dist/ProctorAIDetective.exe `
+                             -ArgumentList '--text','clean-machine-report.txt' `
+                             -Wait -PassThru -NoNewWindow
+          $code = $p.ExitCode
           Get-Content clean-machine-report.txt
           switch ($code) {
             0 { Write-Host '::notice::Clean runner scanned CLEAR, as expected.'; break }

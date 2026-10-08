@@ -100,6 +100,64 @@ installed reports that and exits 0.
 
 ---
 
+## Running it headless
+
+Useful when scanning several machines, or scripting it around an assessment.
+
+```powershell
+ProctorAIDetective.exe --scan                  # JSON to stdout
+ProctorAIDetective.exe --json report.json      # JSON to a file
+ProctorAIDetective.exe --text report.txt       # the human-readable report
+ProctorAIDetective.exe --selftest              # built-in checks, no scan
+```
+
+| Switch | Effect |
+|---|---|
+| `--no-browser` | Skip UI Automation tab reading. Faster, and cannot be slowed by a busy browser. |
+| `--primary-only` | Report Parakeet AI only, not the wider tool class. |
+| `-v`, `--verbose` | Scan progress to stderr. |
+
+### Exit codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Clear |
+| `2` | Suspicious |
+| `3` | Detected (running) |
+| `1` | The scan itself failed |
+
+### Reading the exit code from PowerShell
+
+This is a **GUI-subsystem** binary, so double-clicking it does not flash a console window. The
+side effect is that **PowerShell does not wait for it**, and `$LASTEXITCODE` is left empty:
+
+```powershell
+.\ProctorAIDetective.exe --scan
+$LASTEXITCODE          # '' - empty, not 0. Do not branch on this.
+```
+
+Use `Start-Process -Wait -PassThru`, which is reliable:
+
+```powershell
+$p = Start-Process .\ProctorAIDetective.exe -ArgumentList '--scan' `
+                   -Wait -PassThru -NoNewWindow
+switch ($p.ExitCode) {
+    0 { 'clear' }
+    2 { 'suspicious - look at the evidence' }
+    3 { 'detected' }
+    1 { 'the scan failed' }
+}
+```
+
+Piping also forces PowerShell to wait, so `... --scan | Out-Null; $LASTEXITCODE` works too.
+`cmd.exe` and bash wait normally, so `%ERRORLEVEL%` and `$?` are reliable there without
+any of this.
+
+This caught out the project's own CI on its first run, which is why it is documented here
+rather than left to be rediscovered.
+
+---
+
 ## SmartScreen: what you will see on first run
 
 The executable is **not code-signed**. On a machine where it has not been seen before, Windows will
@@ -113,11 +171,35 @@ Click **More info**, then **Run anyway**. There is no setting that removes this 
 trick in the installer that suppresses it — SmartScreen is reacting to the absence of a reputable
 code-signing certificate, which is exactly what it is for.
 
-**The only real fix is to sign the binary.** That means buying an OV or EV code-signing certificate
-(roughly USD 200-600/year, EV requires a hardware token) and running `signtool` over
-`ProctorAIDetective.exe` as a build step. An OV certificate still accumulates SmartScreen reputation slowly;
-an EV certificate gets it immediately. If you are deploying this inside an organisation, signing it
-with your own internal certificate and pushing that certificate through policy is the normal answer.
+**The only real fix is to sign the binary**, and the cheapest route is now
+**Microsoft Trusted Signing** (rebranded Azure Artifact Signing): about USD 10/month, with the
+key held in a cloud HSM so there is no USB token to post around. It is available to verified
+US, Canadian, EU and UK organisations with a few years of verifiable operating history.
+
+Parakeet AI itself is signed this way, which is a neat demonstration that it is within reach of
+a small company: its certificate chains through `Microsoft ID Verified CS EOC CA 03` and carries
+a **three-day** lifetime, which is the service's signature behaviour.
+
+The traditional alternative is an OV or EV certificate from a commercial CA (roughly USD
+200-900/year). Two things changed recently and are worth knowing before paying for EV:
+
+* **Since June 2023**, every publicly-trusted code-signing private key must live on hardware
+  certified to FIPS 140-2 Level 2 or Common Criteria EAL4+. The old "download a .pfx" workflow
+  no longer exists; you get a USB token or a cloud HSM.
+* **Since 2024, EV no longer buys instant SmartScreen reputation.** Reputation now accrues by
+  file hash and download volume for OV and EV alike. EV is still required for kernel-mode
+  driver signing, which does not apply here.
+
+So on day one a signed build still shows a SmartScreen prompt — it just names a verified
+publisher instead of "Unknown publisher", and the reputation clock starts. Because the hash
+changes every release, that clock restarts each time.
+
+Whatever you use, **always timestamp** (`/tr <url> /td SHA256`), or every signature stops
+validating the moment the certificate expires.
+
+If you are deploying this inside an organisation, signing with your own internal certificate and
+pushing that certificate through policy is the normal answer, and avoids SmartScreen entirely on
+managed machines.
 
 Until then: the honest mitigation is that you can build it yourself from this source and compare
 hashes, rather than trusting a binary somebody handed you.
